@@ -8,9 +8,6 @@ extern Pixel LED[RES_LED_X][RES_LED_Y];
 extern int hMovie;
 extern int hTempFrameSoftImage;
 
-//extern std::wstring FilePath;
-//extern std::wstring FileName;
-//extern std::wstring FolderPath;
 extern std::wstring PlayingFileName;
 extern std::wstring PlayingFilePath;
 extern std::list<Movie> MovieList;
@@ -78,7 +75,6 @@ extern bool PushFlag_Key_M;
 extern bool PushFlag_Key_N;
 
 extern bool PushFlag_Key_O;
-//extern bool PushFlag_Key_P;
 
 extern bool PushFlag_Key_Enter;
 extern bool PushFlag_Key_Esc;
@@ -107,9 +103,6 @@ extern const unsigned int Orange;
 extern const unsigned int Purple;
 extern const unsigned int Pink;
 extern const unsigned int Sky;
-
-extern const DWORD fopenFlags;
-extern const LPCTSTR fopenFilter;
 
 extern std::wstring KeyGuideForScreening;
 extern std::wstring KeyGuideForInitial;

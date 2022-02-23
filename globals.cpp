@@ -14,9 +14,6 @@ Pixel LED[RES_LED_X][RES_LED_Y];
 int hMovie;
 int hTempFrameSoftImage;
 
-//std::wstring FilePath;
-//std::wstring FileName;
-//std::wstring FolderPath;
 std::wstring PlayingFileName;
 std::wstring PlayingFilePath;
 std::list<Movie> MovieList;
@@ -102,7 +99,6 @@ bool PushFlag_Key_M = FALSE;
 bool PushFlag_Key_N = FALSE;
 
 bool PushFlag_Key_O = FALSE;
-//bool PushFlag_Key_P = FALSE;
 
 bool PushFlag_Key_Enter = FALSE;
 bool PushFlag_Key_Esc = FALSE;
@@ -133,17 +129,6 @@ const unsigned int Orange = GetColor(255, 127, 0);
 const unsigned int Purple = GetColor(127, 0, 255);
 const unsigned int Pink = GetColor(255, 0, 127);
 const unsigned int Sky = GetColor(0, 127, 255);
-
-const DWORD fopenFlags = OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_HIDEREADONLY;
-const LPCTSTR fopenFilter = L"すべてのファイル(*.*)|*.*|"
-	L"対応している形式の動画ファイル(*.mp4; *.m4v; *.mkv; *.webm; *.flv; *.mpg; *.avi)|*.mp4;*.m4v;*.mkv;*.webm;*.flv;*.mpg;*.avi|"
-	L"MP4ファイル(*.mp4)|*.mp4|"
-	L"M4Vファイル(*.m4v)|*.m4v|"
-	L"MKVファイル(*.mkv)|*.mkv|"
-	L"WEBMファイル(*.webm)|*.webm|"
-	L"FLVファイル(*.flv)|*.flv|"
-	L"MPEGファイル(*.mpg)| *.mpg|"
-	L"AVIファイル(*.avi)|*.avi";
 
 
 std::wstring KeyGuideForScreening = 

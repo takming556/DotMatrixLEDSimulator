@@ -20,13 +20,11 @@
 
 #pragma warning(disable:4996)
 
+
 //プロトタイプ宣言たち
 Pixel GetPixelColorAveraged(int GraphHandle, int picked_x, int picked_y, int target_res_x, int target_res_y, int source_res_x, int source_res_y);
 int CreateSoftImageFromGraph(int GraphHandle);
-//bool GetFilePath(std::wstring* FileName, std::wstring* FilePath);
 void OpenFiles();
-//bool GetDirectoryPath(std::wstring* DirectoryPath);
-//BOOL GetOpenDirectoryPath(std::wstring* DirectoryPath);
 void DrawStatus();
 void DrawKeyGuide();
 void CheckKeyInput_onScreening();
@@ -91,30 +89,13 @@ void Initial() {
 
 	if (PushFlag_Key_O == FALSE && CheckHitKey(KEY_INPUT_O) == TRUE) {
 		PushFlag_Key_O = TRUE;
+
 		OpenFiles();
-		//std::wstring FileName;
-		//std::wstring FilePath;
-		//if (GetFilePath(&FileName, &FilePath) == TRUE) {
-		//	AddMovieToMovieList(FileName, FilePath);
-		//}
+
 	}
 	if (PushFlag_Key_O == TRUE && CheckHitKey(KEY_INPUT_O) == FALSE) {
 		PushFlag_Key_O = FALSE;
 	}
-
-
-	//if (PushFlag_Key_P == FALSE && CheckHitKey(KEY_INPUT_P) == TRUE) {
-	//	PushFlag_Key_P = TRUE;
-	//	std::wstring DirectoryPath;
-	//	if (GetDirectoryPath(&DirectoryPath) == TRUE) {
-	//		DrawFormatString(0, 0, GetColor(255, 0, 0), L"%ls", DirectoryPath.c_str());
-	//		ScreenFlip();
-	//		WaitKey();
-	//	}
-	//}
-	//if (PushFlag_Key_P == TRUE && CheckHitKey(KEY_INPUT_P) == FALSE) {
-	//	PushFlag_Key_P = FALSE;
-	//}
 
 
 	if (PushFlag_Key_F11 == FALSE && CheckHitKey(KEY_INPUT_F11) == TRUE) {
@@ -235,7 +216,6 @@ void BeginScreening(bool ResumeFlag) {
 	hMovie = LoadGraph(FilePath.c_str());
 	ChangeMovieVolumeToGraph(SoundVolume, hMovie);
 	if (ResumeFlag == TRUE)SeekMovieToGraphToFrame(hMovie, movie.PlayResumeFrame);
-	//if (ResumeFlag == TRUE)SeekMovieToGraphToFrame(hMovie, 2000);
 	PlayMovieToGraph(hMovie);
 	Timer = GetNowCount();
 }
@@ -344,229 +324,7 @@ void OpenFiles() {
 	//WaitKey();
 	pIShellItemArray->Release();
 	pIFileOpenDialog->Release();
-
-
-					//wchar_t* lpszFilePath = nullptr;
-					//wchar_t* lpszFileName = nullptr;
-
-					//pIShellItem->GetDisplayName(SIGDN_NORMALDISPLAY, &lpszFileName);
-					//pIShellItem->GetDisplayName(SIGDN_FILESYSPATH, &lpszFilePath);
-
-					//DrawFormatString(0, 0, Red, L"Dir:%ls", lpszFilePath);
-					//DrawFormatString(0, 15, Red, L"Dir:%ls", lpszFileName);
-
-					//ScreenFlip();
-					//WaitKey();
-
-	//CFileDialog fopenDlg(TRUE, NULL, NULL, fopenFlags, fopenFilter, (CWnd*)GetMainWindowHandle(), 0, TRUE);
-	//if (fopenDlg.DoModal() == IDOK);
-
-
-	//OPENFILENAME ofn;
-	//const int BufferSize = 37772;
-	//wchar_t lpstrBuffer[BufferSize];
-
-	//memset(&ofn, 0, sizeof(OPENFILENAME));
-	//memset(lpstrBuffer, 0, sizeof(lpstrBuffer));
-
-	//ofn.lStructSize = sizeof(OPENFILENAME);
-	//ofn.hwndOwner = GetMainWindowHandle();
-	//ofn.lpstrFilter =
-	//	L"すべてのファイル(*.*)\0*.*"
-	//	L"\0対応している形式の動画ファイル(*.mp4; *.m4v; *.mkv; *.webm; *.flv; *.mpg; *.avi)\0*.mp4;*.m4v;*.mkv;*.webm;*.flv;*.mpg;*.avi"
-	//	L"\0MP4ファイル(*.mp4)\0*.mp4"
-	//	L"\0M4Vファイル(*.m4v)\0*.m4v"
-	//	L"\0MKVファイル(*.mkv)\0*.mkv"
-	//	L"\0WEBMファイル(*.webm)\0*.webm"
-	//	L"\0FLVファイル(*.flv)\0*.flv"
-	//	L"\0MPEGファイル(*.mpg)\0 *.mpg"
-	//	L"\0AVIファイル(*.avi)\0 *.avi\0"
-	//	L"\0";
-	//ofn.nFilterIndex = 1;
-	//ofn.lpstrFile = lpstrBuffer;
-	//ofn.nMaxFile = sizeof(lpstrBuffer);
-	//ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
-	//ofn.lpstrTitle = L"動画ファイルを開く";
-	//
-	//if (GetOpenFileName(&ofn) == 1) {
-	//	std::wstring FileName;
-	//	std::wstring DirectoryPath;
-	//	std::vector<std::wstring> FileNames;
-	//	std::vector<wchar_t> vtrBuffer[BufferSize];
-	//	for (int i = 0; i < BufferSize; i++) {
-	//		vtrBuffer->push_back(lpstrBuffer[i]);
-	//	}
-	//	std::wstring wstringraw(vtrBuffer->begin(), vtrBuffer->end());
-	//	std::wstringstream wssraw(wstringraw);
-
-	//	std::getline(wssraw, DirectoryPath, L'\0');
-
-	//	while (std::getline(wssraw, FileName, L'\0')) {
-	//		if(FileName != L"\0")FileNames.push_back(FileName);
-	//	}
-
-	//	std::wstring FilePath;
-	//	if (FileNames.size() == 0) {
-	//		FileName = DirectoryPath.substr(ofn.nFileOffset, DirectoryPath.length() - ofn.nFileOffset);
-	//		FilePath = DirectoryPath;
-	//		AddMovieToMovieList(FileName, FilePath);
-	//	}
-	//	else if (FileNames.size() >= 1) {
-	//		for (int i = 0; i < FileNames.size(); i++) {
-	//			FileName = FileNames[i];
-	//			FilePath = DirectoryPath + L"\\" + FileName;
-	//			AddMovieToMovieList(FileName, FilePath);
-	//		}
-	//	}
-
-	//	DrawFormatString(300, 0, Red, L"Dir:%ls", DirectoryPath.c_str());
-	//	for (int i = 0, y = 0; i < FileNames.size(); i++) {
-	//		y = 15 + 15 * i;
-	//		DrawFormatString(300, y, Orange, L"%d:%ls", i, FileNames[i].c_str());
-	//	}
-	//	ScreenFlip();
-	//	WaitKey();
-
-	//	std::wofstream fout;
-	//	fout.imbue(std::locale(".65001"));
-	//	fout.open(L"filenames.txt");
-	//	fout << DirectoryPath << std::endl;
-	//	for (int i = 0; i < FileNames.size(); i++) {
-	//		fout << FileNames[i] << std::endl;
-	//	}
-	//	fout.close();
-	//}
-
 }
-
-
-//bool GetFilePath(std::wstring* FileName, std::wstring* FilePath) {
-//	OPENFILENAME ofn;
-//	wchar_t FilePathBuffer[10000];
-//	wchar_t FileNameBuffer[MAX_PATH];
-//
-//	//OPENFILENAME構造体を設定
-//	memset(&ofn, 0, sizeof(OPENFILENAME));
-//	memset(FilePathBuffer, 0, sizeof(FilePathBuffer));
-//	memset(FileNameBuffer, 0, sizeof(FileNameBuffer));
-//	ofn.lStructSize = sizeof(OPENFILENAME);
-//	ofn.hwndOwner = GetMainWindowHandle();
-//	ofn.lpstrFilter =
-//		L"すべてのファイル(*.*)\0*.*"
-//		L"\0対応している形式の動画ファイル(*.mp4; *.m4v; *.mkv; *.webm; *.flv; *.mpg; *.avi)\0*.mp4;*.m4v;*.mkv;*.webm;*.flv;*.mpg;*.avi"
-//		L"\0MP4ファイル(*.mp4)\0*.mp4"
-//		L"\0M4Vファイル(*.m4v)\0*.m4v"
-//		L"\0MKVファイル(*.mkv)\0*.mkv"
-//		L"\0WEBMファイル(*.webm)\0*.webm"
-//		L"\0FLVファイル(*.flv)\0*.flv"
-//		L"\0MPEGファイル(*.mpg)\0 *.mpg"
-//		L"\0AVIファイル(*.avi)\0 *.avi\0"
-//		L"\0";
-//	ofn.nFilterIndex = 1;
-//	ofn.lpstrFile = FilePathBuffer;
-//	ofn.lpstrFileTitle = FileNameBuffer;
-//	ofn.nMaxFile = sizeof(FilePathBuffer);
-//	ofn.nMaxFileTitle = sizeof(FileNameBuffer);
-//	ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ALLOWMULTISELECT | OFN_EXPLORER;
-//	ofn.lpstrDefExt = L"";
-//	ofn.lpstrTitle = L"動画ファイルを開く";
-//
-//	if (GetOpenFileName(&ofn) == 0)return FALSE;
-//	//DrawFormatString(0, 0, GetColor(255, 255, 255), "%s", FullPath);
-//	//ScreenFlip();
-//	//WaitKey();
-//	*FileName = FileNameBuffer;
-//	*FilePath = FilePathBuffer;
-//	//DrawFormatString(0, 0, GetColor(255, 0, 0), "%s", FullFileName);
-//	//ScreenFlip();
-//	//WaitKey();
-//
-//	return TRUE;
-//}
-
-
-//bool GetDirectoryPath(std::wstring* DirectoryPath) {
-//	OPENFILENAME ofn;
-//	wchar_t DirectoryPathBuffer[MAX_PATH];
-//
-//	//OPENFILENAME構造体を設定
-//	memset(&ofn, 0, sizeof(OPENFILENAME));
-//	memset(DirectoryPathBuffer, 0, sizeof(DirectoryPathBuffer));
-//
-//	ofn.lStructSize = sizeof(OPENFILENAME);
-//	ofn.hwndOwner = GetMainWindowHandle();
-//	ofn.lpstrFilter =
-//		L"フォルダ\0.*.*\0"
-//		L"\0";
-//	ofn.nFilterIndex = 1;
-//	ofn.lpstrFile = DirectoryPathBuffer;
-//	ofn.nMaxFile = sizeof(DirectoryPathBuffer);
-//	ofn.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
-//	ofn.lpstrDefExt = L"";
-//	ofn.lpstrTitle = L"動画ファイルを含むフォルダを開く";
-//
-//	if (GetOpenFileName(&ofn) == 0)return FALSE;
-//	*DirectoryPath = DirectoryPathBuffer;
-//	return TRUE;
-//}
-
-
-//static
-//int CALLBACK SHBrowseProc(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
-//{
-//	if (uMsg == BFFM_INITIALIZED && lpData)
-//	{
-//		//  デフォルトで選択させるパスの指定
-//		SendMessage(hWnd, BFFM_SETSELECTION, TRUE, lpData);
-//	}
-//	return 0;
-//}
-//static
-//void SHFree(ITEMIDLIST* pidl)
-//{
-//	IMalloc* pMalloc;
-//	SHGetMalloc(&pMalloc);
-//	if (pMalloc)
-//	{
-//		pMalloc->Free(pidl);
-//		pMalloc->Release();
-//	}
-//}
-//
-//BOOL GetOpenDirectoryPath(std::wstring *DirectoryPath)
-//{
-//	BROWSEINFO  bi;
-//	wchar_t lpszBuffer[MAX_PATH];
-//	DWORD dwBufferSize = sizeof(lpszBuffer);
-//	const wchar_t lpszInitialDirectory[] = L"D:\\Users\\takum\\Videos";
-//
-//	ZeroMemory(&bi, sizeof(BROWSEINFO));
-//	ZeroMemory(lpszBuffer, sizeof(lpszBuffer));
-//
-//	bi.hwndOwner = GetMainWindowHandle();
-//	bi.lpfn = SHBrowseProc;	//  コールバック関数を指定
-//	bi.lParam = (LPARAM)lpszInitialDirectory;	//  デフォルトで選択させておくフォルダを指定
-//	bi.lpszTitle = _T("動画ファイルを含むフォルダを開く");	//  タイトルの指定
-//
-//	ITEMIDLIST* pidl = SHBrowseForFolder(&bi);	//  フォルダダイアログの起動
-//	if (pidl)
-//	{
-//		//  選択されたフォルダ名を取得
-//		TCHAR  szSelectedFolder[_MAX_PATH];
-//		SHGetPathFromIDList(pidl, szSelectedFolder);
-//		SHFree(pidl);
-//		if ((DWORD)_tcslen(szSelectedFolder) < dwBufferSize)
-//		{
-//			_tcsncpy_s(lpszBuffer, dwBufferSize, szSelectedFolder, _TRUNCATE);
-//			*DirectoryPath = lpszBuffer;
-//			//  フォルダが選択された
-//			return TRUE;
-//		}
-//	}
-//	//  フォルダは選択されなかった
-//	return FALSE;
-//}
-
 
 
 int CreateSoftImageFromGraph(int GraphHandle) {
@@ -901,11 +659,6 @@ void CheckKeyInput_onScreening() {
 		if (PauseFlag == FALSE)PauseMovieToGraph(hMovie);
 
 		OpenFiles();
-		//std::wstring FileName;
-		//std::wstring FilePath;
-		//if (GetFilePath(&FileName, &FilePath) == TRUE) {
-		//	AddMovieToMovieList(FileName, FilePath);
-		//}
 
 		if (PauseFlag == FALSE)PlayMovieToGraph(hMovie);
 
@@ -913,24 +666,6 @@ void CheckKeyInput_onScreening() {
 	if (PushFlag_Key_O == TRUE && CheckHitKey(KEY_INPUT_O) == FALSE) {
 		PushFlag_Key_O = FALSE;
 	}
-
-
-	//if (PushFlag_Key_P == FALSE && CheckHitKey(KEY_INPUT_P) == TRUE) {
-	//	PushFlag_Key_P = TRUE;
-
-	//	if (PauseFlag == FALSE)PauseMovieToGraph(hMovie);
-	//	std::wstring DirectoryPath;
-	//	if (GetDirectoryPath(&DirectoryPath) == TRUE) {
-	//		DrawFormatString(0, 0, GetColor(255, 0, 0), L"%ls", DirectoryPath.c_str());
-	//		ScreenFlip();
-	//		WaitKey();
-	//	}
-	//	if (PauseFlag == FALSE)PlayMovieToGraph(hMovie);
-
-	//}
-	//if (PushFlag_Key_P == TRUE && CheckHitKey(KEY_INPUT_P) == FALSE) {
-	//	PushFlag_Key_P = FALSE;
-	//}
 
 
 	if (PushFlag_Key_Esc == FALSE && CheckHitKey(KEY_INPUT_ESCAPE) == TRUE) {
