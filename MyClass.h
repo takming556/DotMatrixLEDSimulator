@@ -2,6 +2,27 @@
 #include <string>
 #include <math.h>
 
+class Movie {
+public:
+	Movie(std::wstring FileName, std::wstring FilePath, int PlayResumeFrame, int TotalFrames, double FPS);
+	Movie();
+	std::wstring FileName;
+	std::wstring FilePath;
+	int PlayResumeFrame;
+	int TotalFrames;
+	double FPS;
+	int TotalTimeSeconds;
+};
+inline Movie::Movie(std::wstring FileName, std::wstring FilePath, int PlayResumeFrame, int TotalFrames, double FPS) {
+	this->FileName = FileName;
+	this->FilePath = FilePath;
+	this->PlayResumeFrame = PlayResumeFrame;
+	this->TotalFrames = TotalFrames;
+	this->FPS = FPS;
+	this->TotalTimeSeconds = TotalFrames / FPS;
+}
+inline Movie::Movie() {}
+
 
 class Pixel {
 public:
@@ -42,16 +63,4 @@ inline void Pixel::negativize(void) {
 	r = 255 - r;
 	g = 255 - g;
 	b = 255 - b;
-}
-
-class Movie {
-public:
-	Movie(std::wstring InitFileName, std::wstring InitFilePath);
-	Movie() {}
-	std::wstring FileName;
-	std::wstring FilePath;
-};
-inline Movie::Movie(std::wstring InitFileName, std::wstring InitFilePath) {
-	FileName = InitFileName;
-	FilePath = InitFilePath;
 }

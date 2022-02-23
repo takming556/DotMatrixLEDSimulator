@@ -5,6 +5,10 @@
 #include "externs.h"
 #include "MyClass.h"
 
+
+Pixel LED[RES_LED_X][RES_LED_Y];
+
+
 //グローバル変数たち
 //ハンドル
 int hMovie;
@@ -16,7 +20,7 @@ int hTempFrameSoftImage;
 std::wstring PlayingFileName;
 std::wstring PlayingFilePath;
 std::list<Movie> MovieList;
-std::list<Movie>::iterator itrPlayPos;
+std::list<Movie>::iterator itrMovieList;
 
 int Scene = INITIAL;
 
@@ -43,16 +47,17 @@ int G_Tones = ColorDepthCustoms[ColorDepthCustomID][1];//緑色の階調数
 int B_Tones = ColorDepthCustoms[ColorDepthCustomID][2];//青色の階調数
 int ColorTones = R_Tones * G_Tones * B_Tones; //表現可能な色の数
 
-double Gamma = 0.5;            //ガンマ値
+double Gamma = 0.55;            //ガンマ値
 double GammaAdjustStep = 0.05; //ガンマ値調節の最小単位
 
 int SoundVolume = 125;
 
-int msPlayTime = 0; //再生位置(ミリ秒)
-int miPlayTime;     //再生時間の分部分
-int scPlayTime;     //再生時間の秒部分
-int PlayFrame = 0;  //再生位置(フレーム)
-int TotalFrame;     //再生中の動画の総フレーム数
+int PlayTimeMilliseconds = 0;    //再生位置(ミリ秒)
+int PlayFrame = 0;     //再生位置(フレーム)
+int TotalFrames;       //再生中の動画の総フレーム数
+int TotalTimeSeconds;  //再生中の動画の総再生時間(秒)
+int TotalTime_min;     //再生中の動画の総再生時間の分部分
+int TotalTime_sec;     //再生中の動画の総再生時間の秒部分
 
 
 int SourceWidth;
@@ -69,77 +74,105 @@ int FPS = 0;
 
 //フラグ
 //キーボード押下フラグ
-bool isPushedKey_Esc = FALSE;
+bool PushFlag_Key_F1 = FALSE;
+bool PushFlag_Key_F3 = FALSE;
+bool PushFlag_Key_F11 = FALSE;
 
-bool isPushedKey_W = FALSE;
-bool isPushedKey_A = FALSE;
-bool isPushedKey_S = FALSE;
-bool isPushedKey_D = FALSE;
-bool isPushedKey_M = FALSE;
-bool isPushedKey_N = FALSE;
-bool isPushedKey_R = FALSE;
-bool isPushedKey_F = FALSE;
+bool PushFlag_Key_W = FALSE;
+bool PushFlag_Key_S = FALSE;
+bool PushFlag_Key_A = FALSE;
+bool PushFlag_Key_D = FALSE;
+
+bool PushFlag_Key_Space = FALSE;
+
+bool PushFlag_Key_Left = FALSE;
+bool PushFlag_Key_Right = FALSE;
+
+bool PushFlag_Key_Z = FALSE;
+bool PushFlag_Key_C = FALSE;
+bool PushFlag_Key_B = FALSE;
+
+bool PushFlag_Key_Up = FALSE;
+bool PushFlag_Key_Down = FALSE;
+
+bool PushFlag_Key_R = FALSE;
+bool PushFlag_Key_T = FALSE;
+bool PushFlag_Key_F = FALSE;
+bool PushFlag_Key_M = FALSE;
+bool PushFlag_Key_N = FALSE;
+
+bool PushFlag_Key_O = FALSE;
+//bool PushFlag_Key_P = FALSE;
+
+bool PushFlag_Key_Enter = FALSE;
+bool PushFlag_Key_Esc = FALSE;
+bool PushFlag_Key_Delete = FALSE;
 
 
-bool isPushedKey_O = FALSE;
-bool isPushedKey_P = FALSE;
-
-bool isPushedKey_Up = FALSE;
-bool isPushedKey_Down = FALSE;
-bool isPushedKey_Left = FALSE;
-bool isPushedKey_Right = FALSE;
-
-bool isPushedKey_Space = FALSE;
-bool isPushedKey_Z = FALSE;
-bool isPushedKey_C = FALSE;
-
-bool isPushedKey_F1 = FALSE;
-bool isPushedKey_F3 = FALSE;
-bool isPushedKey_F11 = FALSE;
 
 bool FullscreenFlag = FALSE;    //全画面表示 入/切
 bool StatusHudShowFlag = TRUE;  //ステータス表示 入/切
 bool KeyGuideShowFlag = TRUE;   //操作ガイド表示 入/切
 bool MonochromizeFlag = FALSE;  //モノクロ表示 入/切
 bool NegativizeFlag = FALSE;    //ネガ表示 入/切
-bool RepeatFlag = FALSE;        //単曲循環 入/切
+bool RepeatOneFlag = FALSE;     //単体循環 入/切
+bool RepeatAllFlag = FALSE;     //全体循環 入/切
 bool ShuffleFlag = FALSE;       //乱順再生 入/切
 bool PauseFlag = FALSE;         //一時停止 入/切
 
-//よく使う色を変数で定義
-unsigned int White = GetColor(255, 255, 255);
-unsigned int Red = GetColor(255, 255, 0);
-unsigned int Blue = GetColor(0, 0, 255);
-unsigned int Green = GetColor(0, 255, 0);
-unsigned int Black = GetColor(0, 0, 0);
-unsigned int Yellow = GetColor(255, 255, 0);
-unsigned int Cyan = GetColor(0, 255, 255);
-unsigned int Mazenta = GetColor(255, 0, 255);
-unsigned int Orange = GetColor(255, 127, 0);
-unsigned int Purple = GetColor(127, 0, 255);
-unsigned int Pink = GetColor(255, 0, 127);
-unsigned int Sky = GetColor(0, 127, 255);
+//よく使いそうな色を変数であらかじめ定義しておく
+const unsigned int White = GetColor(255, 255, 255);
+const unsigned int Red = GetColor(255, 0, 0);
+const unsigned int Blue = GetColor(0, 0, 255);
+const unsigned int Green = GetColor(0, 255, 0);
+const unsigned int Black = GetColor(0, 0, 0);
+const unsigned int Yellow = GetColor(255, 255, 0);
+const unsigned int Cyan = GetColor(0, 255, 255);
+const unsigned int Mazenta = GetColor(255, 0, 255);
+const unsigned int Orange = GetColor(255, 127, 0);
+const unsigned int Purple = GetColor(127, 0, 255);
+const unsigned int Pink = GetColor(255, 0, 127);
+const unsigned int Sky = GetColor(0, 127, 255);
+
+const DWORD fopenFlags = OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_HIDEREADONLY;
+const LPCTSTR fopenFilter = L"すべてのファイル(*.*)|*.*|"
+	L"対応している形式の動画ファイル(*.mp4; *.m4v; *.mkv; *.webm; *.flv; *.mpg; *.avi)|*.mp4;*.m4v;*.mkv;*.webm;*.flv;*.mpg;*.avi|"
+	L"MP4ファイル(*.mp4)|*.mp4|"
+	L"M4Vファイル(*.m4v)|*.m4v|"
+	L"MKVファイル(*.mkv)|*.mkv|"
+	L"WEBMファイル(*.webm)|*.webm|"
+	L"FLVファイル(*.flv)|*.flv|"
+	L"MPEGファイル(*.mpg)| *.mpg|"
+	L"AVIファイル(*.avi)|*.avi";
+
 
 std::wstring KeyGuideForScreening = 
-L"[W]......色深度+"
+L"[F1].....操作説明表示<入|切>"
+L"\n[F3].....状態表示<入|切>"
+L"\n[F11]....全画面表示<入|切>"
+L"\n[W]......色深度+"
 L"\n[S]......色深度-"
 L"\n[A]......ガンマ補正+"
 L"\n[D]......ガンマ補正-"
-L"\n[F1].....操作説明表示<入/切>"
-L"\n[F3].....ステータス表示<入/切>"
-L"\n[F11]....全画面表示<入/切>"
+L"\n[Space]..再生/一時停止"
 L"\n[←].....5秒戻る"
 L"\n[→].....5秒進む"
 L"\n[Z]......前の動画へ"
 L"\n[C]......次の動画へ"
+L"\n[B]......この動画の先頭へ"
 L"\n[↑].....音量+"
 L"\n[↓].....音量-"
-L"\n[SPACE]..再生/一時停止"
-L"\n[M]......モノクロ表示<入/切>"
-L"\n[N]......ネガ表示<入/切>"
-L"\n[O]......ファイルを再生待機列に追加"
-L"\n[P]......フォルダを再生待機列に追加";
+L"\n[R]......単体循環<入|切>"
+L"\n[T]......全体循環<入|切>"
+L"\n[F]......乱順再生<入|切>"
+L"\n[M]......単色表示<入|切>"
+L"\n[N]......反色表示<入|切>"
+L"\n[O]......ファイルを再生待機列に追加する"
+L"\n[Esc]....上映を終了する";
 
 std::wstring KeyGuideForInitial = 
-L"[O]......ファイルを開く"
-L"\n[P]......フォルダを開く";
+L"[O]........ファイルを再生待機列に追加する"
+L"\n[Delete]...再生待機列を破棄する"
+L"\n[Enter]....上映を開始する"
+L"\n[F11]......全画面表示<入|切>"
+L"\n[Esc]......プログラムを終了する";

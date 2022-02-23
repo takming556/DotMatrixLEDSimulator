@@ -2,6 +2,9 @@
 
 
 //externêÈåæÇΩÇø
+
+
+extern Pixel LED[RES_LED_X][RES_LED_Y];
 extern int hMovie;
 extern int hTempFrameSoftImage;
 
@@ -11,7 +14,7 @@ extern int hTempFrameSoftImage;
 extern std::wstring PlayingFileName;
 extern std::wstring PlayingFilePath;
 extern std::list<Movie> MovieList;
-extern std::list<Movie>::iterator itrPlayPos;
+extern std::list<Movie>::iterator itrMovieList;
 
 extern int Scene;
 
@@ -27,11 +30,12 @@ extern double GammaAdjustStep;
 
 extern int SoundVolume;
 
-extern int msPlayTime;
-extern int miPlayTime;
-extern int scPlayTime;
+extern int PlayTimeMilliseconds;
 extern int PlayFrame;
-extern int TotalFrame;
+extern int TotalFrames;
+extern int TotalTimeSeconds;
+extern int TotalTime_min;
+extern int TotalTime_sec;
 
 extern int FPS;
 
@@ -45,55 +49,67 @@ extern int Dot_b;
 extern int FrameCounter;
 extern int Timer;
 
-extern bool isPushedKey_Esc;
 
-extern bool isPushedKey_W;
-extern bool isPushedKey_A;
-extern bool isPushedKey_S;
-extern bool isPushedKey_D;
-extern bool isPushedKey_M;
-extern bool isPushedKey_N;
-extern bool isPushedKey_R;
-extern bool isPushedKey_F;
+extern bool PushFlag_Key_F1;
+extern bool PushFlag_Key_F3;
+extern bool PushFlag_Key_F11;
 
-extern bool isPushedKey_O;
-extern bool isPushedKey_P;
+extern bool PushFlag_Key_W;
+extern bool PushFlag_Key_S;
+extern bool PushFlag_Key_A;
+extern bool PushFlag_Key_D;
 
-extern bool isPushedKey_Up;
-extern bool isPushedKey_Down;
-extern bool isPushedKey_Left;
-extern bool isPushedKey_Right;
+extern bool PushFlag_Key_Space;
 
+extern bool PushFlag_Key_Left;
+extern bool PushFlag_Key_Right;
 
-extern bool isPushedKey_F1;
-extern bool isPushedKey_F3;
-extern bool isPushedKey_F11;
+extern bool PushFlag_Key_Z;
+extern bool PushFlag_Key_C;
+extern bool PushFlag_Key_B;
 
-extern bool isPushedKey_Space;
-extern bool isPushedKey_Z;
-extern bool isPushedKey_C;
+extern bool PushFlag_Key_Up;
+extern bool PushFlag_Key_Down;
+
+extern bool PushFlag_Key_R;
+extern bool PushFlag_Key_T;
+extern bool PushFlag_Key_F;
+extern bool PushFlag_Key_M;
+extern bool PushFlag_Key_N;
+
+extern bool PushFlag_Key_O;
+//extern bool PushFlag_Key_P;
+
+extern bool PushFlag_Key_Enter;
+extern bool PushFlag_Key_Esc;
+extern bool PushFlag_Key_Delete;
+
 
 extern bool FullscreenFlag;
 extern bool StatusHudShowFlag;
 extern bool KeyGuideShowFlag;
 extern bool MonochromizeFlag;
 extern bool NegativizeFlag;
-extern bool RepeatFlag;
+extern bool RepeatOneFlag;
+extern bool RepeatAllFlag;
 extern bool ShuffleFlag;
 extern bool PauseFlag;
 
-extern unsigned int White;
-extern unsigned int Red;
-extern unsigned int Blue;
-extern unsigned int Green;
-extern unsigned int Black;
-extern unsigned int Yellow;
-extern unsigned int Cyan;
-extern unsigned int Mazenta;
-extern unsigned int Orange;
-extern unsigned int Purple;
-extern unsigned int Pink;
-extern unsigned int Sky;
+extern const unsigned int White;
+extern const unsigned int Red;
+extern const unsigned int Blue;
+extern const unsigned int Green;
+extern const unsigned int Black;
+extern const unsigned int Yellow;
+extern const unsigned int Cyan;
+extern const unsigned int Mazenta;
+extern const unsigned int Orange;
+extern const unsigned int Purple;
+extern const unsigned int Pink;
+extern const unsigned int Sky;
+
+extern const DWORD fopenFlags;
+extern const LPCTSTR fopenFilter;
 
 extern std::wstring KeyGuideForScreening;
 extern std::wstring KeyGuideForInitial;
