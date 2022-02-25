@@ -1,5 +1,5 @@
 ##############################
-DotMatrixLEDSimulator v1.0.1 by dolpast
+DotMatrixLEDSimulator v1.0.2 by dolpast
 ##############################
 
 DotMatrixLEDSimulatorに興味を持っていただき、ありがとうございます。
