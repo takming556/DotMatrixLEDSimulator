@@ -223,20 +223,36 @@ void BeginScreening(bool ResumeFlag) {
 
 
 void PlayPreviousMovie() {
+	if (itrMovieList == MovieList.begin() && RepeatAllFlag == FALSE) return;
+
 	PauseMovieToGraph(hMovie);
-	//Movie movie = *itrMovieList;
 	itrMovieList->PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
-	--itrMovieList;
-	BeginScreening(TRUE);
+
+	if (itrMovieList == MovieList.begin()) {
+		itrMovieList = --MovieList.end();
+		BeginScreening();
+	}
+	else {
+		--itrMovieList;
+		BeginScreening(TRUE);
+	}
 }
 
 
 void PlayForwardMovie() {
+	if (itrMovieList == --MovieList.end() && RepeatAllFlag == FALSE) return;
+
 	PauseMovieToGraph(hMovie);
-	//Movie movie = *itrMovieList;
 	itrMovieList->PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
-	++itrMovieList;
-	BeginScreening(TRUE);
+
+	if (itrMovieList == --MovieList.end()) {
+		itrMovieList = MovieList.begin();
+		BeginScreening();
+	}
+	else {
+		++itrMovieList;
+		BeginScreening(TRUE);
+	}
 }
 
 
@@ -555,9 +571,7 @@ void CheckKeyInput_onScreening() {
 
 	if (PushFlag_Key_Z == FALSE && CheckHitKey(KEY_INPUT_Z) == TRUE) {
 		PushFlag_Key_Z = TRUE;
-		if (itrMovieList != MovieList.begin()) {
-			PlayPreviousMovie();
-		}
+		PlayPreviousMovie();
 	}
 	if (PushFlag_Key_Z == TRUE && CheckHitKey(KEY_INPUT_Z) == FALSE) {
 		PushFlag_Key_Z = FALSE;
@@ -566,9 +580,7 @@ void CheckKeyInput_onScreening() {
 
 	if (PushFlag_Key_C == FALSE && CheckHitKey(KEY_INPUT_C) == TRUE) {
 		PushFlag_Key_C = TRUE;
-		if (itrMovieList != --MovieList.end()) {
-			PlayForwardMovie();
-		}
+		PlayForwardMovie();
 	}
 	if (PushFlag_Key_C == TRUE && CheckHitKey(KEY_INPUT_C) == FALSE) {
 		PushFlag_Key_C = FALSE;
