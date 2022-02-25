@@ -1,4 +1,4 @@
-# DotMatrixLEDSimulator v1.0.1 by dolpast
+# DotMatrixLEDSimulator v1.0.2 by dolpast
 動画ファイルを読み込んで、ドットマトリクスLED風に表示するソフトウェアです。DXライブラリを使用しています。
 
 
