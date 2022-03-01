@@ -16,8 +16,9 @@ int hTempFrameSoftImage;
 
 std::wstring PlayingFileName;
 std::wstring PlayingFilePath;
-std::list<Movie> MovieList;
-std::list<Movie>::iterator itrMovieList;
+std::vector<Movie> MovieTable;
+std::vector<Movie> PlayQueue;
+int NowplayingPos = -1;
 
 int Scene = INITIAL;
 
@@ -51,10 +52,10 @@ int SoundVolume = 125;
 
 int PlayTimeMilliseconds = 0;    //再生位置(ミリ秒)
 int PlayFrame = 0;     //再生位置(フレーム)
-int TotalFrames;       //再生中の動画の総フレーム数
-int TotalTimeSeconds;  //再生中の動画の総再生時間(秒)
-int TotalTime_min;     //再生中の動画の総再生時間の分部分
-int TotalTime_sec;     //再生中の動画の総再生時間の秒部分
+int TotalFrames = 0;       //再生中の動画の総フレーム数
+int TotalTimeSeconds = 0;  //再生中の動画の総再生時間(秒)
+int TotalTime_min = 0;     //再生中の動画の総再生時間の分部分
+int TotalTime_sec = 0;     //再生中の動画の総再生時間の秒部分
 
 
 int SourceWidth;
@@ -64,7 +65,7 @@ int Dot_r;
 int Dot_g;
 int Dot_b;
 int FrameCounter;
-int Timer;
+int Timer = GetNowCount();
 int FPS = 0;
 
 
@@ -72,6 +73,7 @@ int FPS = 0;
 //フラグ
 //キーボード押下フラグ
 bool PushFlag_Key_F1 = FALSE;
+bool PushFlag_Key_F2 = FALSE;
 bool PushFlag_Key_F3 = FALSE;
 bool PushFlag_Key_F11 = FALSE;
 
@@ -109,6 +111,7 @@ bool PushFlag_Key_Delete = FALSE;
 bool FullscreenFlag = FALSE;    //全画面表示 入/切
 bool StatusHudShowFlag = TRUE;  //ステータス表示 入/切
 bool KeyGuideShowFlag = TRUE;   //操作ガイド表示 入/切
+bool PlayQueueShowFlag = TRUE;  //再生待機列表示 入/切
 bool MonochromizeFlag = FALSE;  //モノクロ表示 入/切
 bool NegativizeFlag = FALSE;    //ネガ表示 入/切
 bool RepeatOneFlag = FALSE;     //単体循環 入/切
@@ -133,6 +136,7 @@ const unsigned int Sky = GetColor(0, 127, 255);
 
 std::wstring KeyGuideForScreening = 
 L"[F1].....操作説明表示<入|切>"
+L"\n[F2].....再生待機列表示<入|切>"
 L"\n[F3].....状態表示<入|切>"
 L"\n[F11]....全画面表示<入|切>"
 L"\n[W]......色深度+"
@@ -159,5 +163,9 @@ std::wstring KeyGuideForInitial =
 L"[O]........ファイルを再生待機列に追加する"
 L"\n[Delete]...再生待機列を破棄する"
 L"\n[Enter]....上映を開始する"
+L"\n[F1].......操作説明表示<入|切>"
+L"\n[F2].......再生待機列表示<入|切>"
+L"\n[F3].......状態表示<入|切>"
 L"\n[F11]......全画面表示<入|切>"
+L"\n[F]........乱順再生<入|切>"
 L"\n[Esc]......プログラムを終了する";

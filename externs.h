@@ -1,3 +1,4 @@
+#include <vector>
 #include "MyClass.h"
 
 
@@ -10,8 +11,9 @@ extern int hTempFrameSoftImage;
 
 extern std::wstring PlayingFileName;
 extern std::wstring PlayingFilePath;
-extern std::list<Movie> MovieList;
-extern std::list<Movie>::iterator itrMovieList;
+extern std::vector<Movie> MovieTable;
+extern std::vector<Movie> PlayQueue;
+extern int NowplayingPos;
 
 extern int Scene;
 
@@ -48,6 +50,7 @@ extern int Timer;
 
 
 extern bool PushFlag_Key_F1;
+extern bool PushFlag_Key_F2;
 extern bool PushFlag_Key_F3;
 extern bool PushFlag_Key_F11;
 
@@ -84,6 +87,7 @@ extern bool PushFlag_Key_Delete;
 extern bool FullscreenFlag;
 extern bool StatusHudShowFlag;
 extern bool KeyGuideShowFlag;
+extern bool PlayQueueShowFlag;
 extern bool MonochromizeFlag;
 extern bool NegativizeFlag;
 extern bool RepeatOneFlag;

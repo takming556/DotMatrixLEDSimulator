@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <list>
+#include <random>
 #include <math.h>
 #include <ShlObj.h>
 #include "DxLib.h"
@@ -27,12 +28,17 @@ int CreateSoftImageFromGraph(int GraphHandle);
 void OpenFiles();
 void DrawStatus();
 void DrawKeyGuide();
+void DrawPlayQueue();
 void CheckKeyInput_onScreening();
 void ChangeScreenMode_onScreening();
-int AddMovieToMovieList(std::wstring FileName, std::wstring FilePath);
+int AddMovie(std::wstring FileName, std::wstring FilePath);
 void BeginScreening(bool ResumeFlag=FALSE);
 void PlayPreviousMovie();
 void PlayForwardMovie();
+std::vector<Movie> CutoutMovies(std::vector<Movie> vctr, int from, int to);
+std::vector<Movie> GetShuffledMovies(std::vector<Movie>);
+void EnableShuffle();
+void DisableShuffle();
 void Screening();
 void Initial();
 
@@ -54,6 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	while (ProcessMessage() == 0) //ウィンドウの閉じるボタンが押されるとループを抜ける
 	{
+
 		if (PushFlag_Key_Esc == FALSE && CheckHitKey(KEY_INPUT_ESCAPE) == TRUE) {
 			if (Scene == INITIAL)break; //初期画面でEscキーが押されると終了
 		}
@@ -73,6 +80,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		ScreenFlip();
+
+
+		++FrameCounter;
+		if (Timer + 1000 <= GetNowCount()) {
+			FPS = FrameCounter;
+			FrameCounter = 0;
+			Timer = GetNowCount();
+		}
+
 	}
  
 	// 読み込んだムービーファイルのグラフィックハンドルの削除
@@ -84,17 +100,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 void Initial() {
-	DrawFormatString(0, 300, Yellow, L"%s", KeyGuideForInitial.c_str());
+
+	if (KeyGuideShowFlag == TRUE)DrawKeyGuide();
+	if (PlayQueueShowFlag == TRUE)DrawPlayQueue();
+	if (StatusHudShowFlag == TRUE)DrawStatus();
 
 
-	if (PushFlag_Key_O == FALSE && CheckHitKey(KEY_INPUT_O) == TRUE) {
-		PushFlag_Key_O = TRUE;
-
-		OpenFiles();
-
+	if (PushFlag_Key_F1 == FALSE && CheckHitKey(KEY_INPUT_F1) == TRUE) {
+		PushFlag_Key_F1 = TRUE;
+		KeyGuideShowFlag = !KeyGuideShowFlag;
 	}
-	if (PushFlag_Key_O == TRUE && CheckHitKey(KEY_INPUT_O) == FALSE) {
-		PushFlag_Key_O = FALSE;
+	if (PushFlag_Key_F1 == TRUE && CheckHitKey(KEY_INPUT_F1) == FALSE) {
+		PushFlag_Key_F1 = FALSE;
+	}
+
+
+	if (PushFlag_Key_F2 == FALSE && CheckHitKey(KEY_INPUT_F2) == TRUE) {
+		PushFlag_Key_F2 = TRUE;
+		PlayQueueShowFlag = !PlayQueueShowFlag;
+	}
+	if (PushFlag_Key_F2 == TRUE && CheckHitKey(KEY_INPUT_F2) == FALSE) {
+		PushFlag_Key_F2 = FALSE;
+	}
+
+
+	if (PushFlag_Key_F3 == FALSE && CheckHitKey(KEY_INPUT_F3) == TRUE) {
+		PushFlag_Key_F3 = TRUE;
+		StatusHudShowFlag = !StatusHudShowFlag;
+	}
+	if (PushFlag_Key_F3 == TRUE && CheckHitKey(KEY_INPUT_F3) == FALSE) {
+		PushFlag_Key_F3 = FALSE;
 	}
 
 
@@ -108,10 +143,35 @@ void Initial() {
 	}
 
 
+	if (PushFlag_Key_F == FALSE && CheckHitKey(KEY_INPUT_F) == TRUE) {
+		PushFlag_Key_F = TRUE;
+		if (ShuffleFlag == FALSE) {
+			EnableShuffle();
+		}
+		else if (ShuffleFlag == TRUE) {
+			DisableShuffle();
+		}
+	}
+	if (PushFlag_Key_F == TRUE && CheckHitKey(KEY_INPUT_F) == FALSE) {
+		PushFlag_Key_F = FALSE;
+	}
+
+
+	if (PushFlag_Key_O == FALSE && CheckHitKey(KEY_INPUT_O) == TRUE) {
+		PushFlag_Key_O = TRUE;
+
+		OpenFiles();
+
+	}
+	if (PushFlag_Key_O == TRUE && CheckHitKey(KEY_INPUT_O) == FALSE) {
+		PushFlag_Key_O = FALSE;
+	}
+
+
 	if (PushFlag_Key_Enter == FALSE && CheckHitKey(KEY_INPUT_RETURN) == TRUE) {
 		PushFlag_Key_Enter = TRUE;
-		if (MovieList.size() > 0) {
-			itrMovieList = MovieList.begin();
+		if (MovieTable.size() > 0) {
+			NowplayingPos = 0;
 			BeginScreening();
 		}
 	}
@@ -122,19 +182,20 @@ void Initial() {
 
 	if (PushFlag_Key_Delete == FALSE && CheckHitKey(KEY_INPUT_DELETE) == TRUE) {
 		PushFlag_Key_Delete = TRUE;
-		MovieList.clear();
+		MovieTable.clear();
+		MovieTable.shrink_to_fit();
+		PlayQueue.clear();
+		PlayQueue.shrink_to_fit();
 	}
 	if (PushFlag_Key_Delete == TRUE && CheckHitKey(KEY_INPUT_DELETE) == FALSE) {
 		PushFlag_Key_Delete = FALSE;
 	}
 
 
-
 }
 
 
 void Screening() {
-	FrameCounter++;
 	PlayTimeMilliseconds = TellMovieToGraph(hMovie);
 	PlayFrame = TellMovieToGraphToFrame(hMovie);
 
@@ -162,8 +223,10 @@ void Screening() {
 		}
 	}
 
-	if (StatusHudShowFlag == TRUE)DrawStatus();
 	if (KeyGuideShowFlag == TRUE)DrawKeyGuide();
+	if (PlayQueueShowFlag == TRUE)DrawPlayQueue();
+	if (StatusHudShowFlag == TRUE)DrawStatus();
+
 
 	if (GetMovieStateToGraph(hMovie) == 0 && PauseFlag == FALSE) {
 		if (RepeatOneFlag == TRUE) {
@@ -171,19 +234,18 @@ void Screening() {
 			PlayMovieToGraph(hMovie);
 		}
 		if (RepeatOneFlag == FALSE) {
-			++itrMovieList;
-			if (itrMovieList == MovieList.end()) {
+			++NowplayingPos;
+			if (NowplayingPos == PlayQueue.size() - 1) {
 				if (RepeatAllFlag == TRUE) {
-					itrMovieList = MovieList.begin();
+					NowplayingPos = 0;
 					BeginScreening();
 				}
 				if (RepeatAllFlag == FALSE) {
-					//MovieList.clear();
 					DeleteGraph(hMovie);
 					Scene = INITIAL;
 				}
 			}
-			if (itrMovieList != MovieList.end()) {
+			if (NowplayingPos < PlayQueue.size() - 1) {
 				BeginScreening();
 			}
 		}
@@ -191,11 +253,6 @@ void Screening() {
 
 	CheckKeyInput_onScreening();
 
-	if (Timer + 1000 <= GetNowCount()) {
-		FPS = FrameCounter;
-		FrameCounter = 0;
-		Timer = GetNowCount();
-	}
 }
 
 
@@ -203,7 +260,7 @@ void Screening() {
 void BeginScreening(bool ResumeFlag) {
 	Scene = SCREENING;
 	FrameCounter = 0;
-	Movie movie = *itrMovieList;
+	Movie movie = PlayQueue.at(NowplayingPos);
 	std::wstring FileName = movie.FileName;
 	std::wstring FilePath = movie.FilePath;
 	PlayingFileName = FileName;
@@ -217,47 +274,47 @@ void BeginScreening(bool ResumeFlag) {
 	ChangeMovieVolumeToGraph(SoundVolume, hMovie);
 	if (ResumeFlag == TRUE)SeekMovieToGraphToFrame(hMovie, movie.PlayResumeFrame);
 	PlayMovieToGraph(hMovie);
-	Timer = GetNowCount();
+	//Timer = GetNowCount();
 }
 
 
 
 void PlayPreviousMovie() {
-	if (itrMovieList == MovieList.begin() && RepeatAllFlag == FALSE) return;
+	if (NowplayingPos == 0 && RepeatAllFlag == FALSE) return;
 
 	PauseMovieToGraph(hMovie);
-	itrMovieList->PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
+	PlayQueue.at(NowplayingPos).PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
 
-	if (itrMovieList == MovieList.begin()) {
-		itrMovieList = --MovieList.end();
+	if (NowplayingPos == 0) {
+		NowplayingPos = PlayQueue.size() - 1;
 		BeginScreening();
 	}
 	else {
-		--itrMovieList;
+		--NowplayingPos;
 		BeginScreening(TRUE);
 	}
 }
 
 
 void PlayForwardMovie() {
-	if (itrMovieList == --MovieList.end() && RepeatAllFlag == FALSE) return;
+	if (NowplayingPos == PlayQueue.size() - 1 && RepeatAllFlag == FALSE) return;
 
 	PauseMovieToGraph(hMovie);
-	itrMovieList->PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
+	PlayQueue.at(NowplayingPos).PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
 
-	if (itrMovieList == --MovieList.end()) {
-		itrMovieList = MovieList.begin();
+	if (NowplayingPos == PlayQueue.size() - 1) {
+		NowplayingPos = 0;
 		BeginScreening();
 	}
 	else {
-		++itrMovieList;
+		++NowplayingPos;
 		BeginScreening(TRUE);
 	}
 }
 
 
 
-int AddMovieToMovieList(std::wstring FileName, std::wstring FilePath) {
+int AddMovie(std::wstring FileName, std::wstring FilePath) {
 	std::string utf8FilePath = wide_to_utf8(FilePath);
 	cv::VideoCapture video;
 	video.open(utf8FilePath);
@@ -265,7 +322,8 @@ int AddMovieToMovieList(std::wstring FileName, std::wstring FilePath) {
 	int totalframes = video.get(cv::CAP_PROP_FRAME_COUNT);
 	double fps = video.get(cv::CAP_PROP_FPS);
 	Movie movie(FileName, FilePath, 0, totalframes, fps);
-	MovieList.push_back(movie);
+	MovieTable.push_back(movie);
+	PlayQueue.push_back(movie);
 	return 0;
 }
 
@@ -327,7 +385,7 @@ void OpenFiles() {
 		hr = pIShellItem->GetDisplayName(SIGDN_FILESYSPATH, &lpszFilePath);
 		if (FAILED(hr))continue;
 
-		AddMovieToMovieList(std::wstring(lpszFileName), std::wstring(lpszFilePath));
+		AddMovie(std::wstring(lpszFileName), std::wstring(lpszFilePath));
 		//DrawFormatString(0, i * 15, Orange, L"%ls", lpszFilePath);
 		//fout << lpszFilePath << std::endl;
 
@@ -340,6 +398,38 @@ void OpenFiles() {
 	//WaitKey();
 	pIShellItemArray->Release();
 	pIFileOpenDialog->Release();
+}
+
+
+void EnableShuffle() {
+	ShuffleFlag = TRUE;
+	if (PlayQueue.size() >= 2) {
+		std::vector<Movie> ForwardMovies = CutoutMovies(PlayQueue, NowplayingPos + 1, PlayQueue.size() - 1);
+		std::vector<Movie>::iterator from = PlayQueue.begin() + NowplayingPos + 1;
+		std::vector<Movie>::iterator to = PlayQueue.begin() + PlayQueue.size() - 1;
+		PlayQueue.erase(from, to);
+		std::vector<Movie> ShuffledMovies = GetShuffledMovies(ForwardMovies);
+		PlayQueue.insert(PlayQueue.end(), ShuffledMovies.begin(), ShuffledMovies.end());
+	}
+}
+
+
+void DisableShuffle() {
+	ShuffleFlag = FALSE;
+}
+
+
+std::vector<Movie> CutoutMovies(std::vector<Movie> vctr, int from, int to) {
+	std::vector<Movie> resp = { vctr.begin() + from, vctr.begin() + to };
+	return resp;
+}
+
+
+std::vector<Movie> GetShuffledMovies(std::vector<Movie> vctr) {
+	std::random_device rd;
+	std::default_random_engine rng(rd());
+	std::shuffle(vctr.begin(), vctr.end(), rng);
+	return vctr;
 }
 
 
@@ -440,7 +530,21 @@ void DrawStatus() {
 
 
 void DrawKeyGuide() {
-	DrawFormatString(0, 300, Yellow, L"%s", KeyGuideForScreening.c_str());
+	switch (Scene) {
+	case INITIAL:
+		DrawFormatString(0, 300, Yellow, L"%s", KeyGuideForInitial.c_str());
+		break;
+	case SCREENING:
+		DrawFormatString(0, 300, Yellow, L"%s", KeyGuideForScreening.c_str());
+		break;
+	}
+}
+
+
+void DrawPlayQueue() {
+	for (int i = 0; i < PlayQueue.size(); i++) {
+		DrawFormatString(640, i * 15, Orange, L"%ls", PlayQueue.at(i).FileName.c_str());
+	}
 }
 
 
@@ -465,6 +569,16 @@ void CheckKeyInput_onScreening() {
 	if (PushFlag_Key_F1 == TRUE && CheckHitKey(KEY_INPUT_F1) == FALSE) {
 		PushFlag_Key_F1 = FALSE;
 	}
+
+
+	if (PushFlag_Key_F2 == FALSE && CheckHitKey(KEY_INPUT_F2) == TRUE) {
+		PushFlag_Key_F2 = TRUE;
+		PlayQueueShowFlag = !PlayQueueShowFlag;
+	}
+	if (PushFlag_Key_F2 == TRUE && CheckHitKey(KEY_INPUT_F2) == FALSE) {
+		PushFlag_Key_F2 = FALSE;
+	}
+
 
 
 	if (PushFlag_Key_F3 == FALSE && CheckHitKey(KEY_INPUT_F3) == TRUE) {
@@ -640,7 +754,12 @@ void CheckKeyInput_onScreening() {
 
 	if (PushFlag_Key_F == FALSE && CheckHitKey(KEY_INPUT_F) == TRUE) {
 		PushFlag_Key_F = TRUE;
-		ShuffleFlag = !ShuffleFlag;
+		if (ShuffleFlag == FALSE) {
+			EnableShuffle();
+		}
+		else if (ShuffleFlag == TRUE) {
+			DisableShuffle();
+		}
 	}
 	if (PushFlag_Key_F == TRUE && CheckHitKey(KEY_INPUT_F) == FALSE) {
 		PushFlag_Key_F = FALSE;
@@ -683,7 +802,7 @@ void CheckKeyInput_onScreening() {
 	if (PushFlag_Key_Esc == FALSE && CheckHitKey(KEY_INPUT_ESCAPE) == TRUE) {
 		PushFlag_Key_Esc = TRUE;
 		PauseMovieToGraph(hMovie);
-		//MovieList.clear();
+		//PlayList.clear();
 		DeleteGraph(hMovie);
 		Scene = INITIAL;
 	}
