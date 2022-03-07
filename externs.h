@@ -1,18 +1,19 @@
-#include <vector>
-#include "MyClass.h"
+using std::wstring;
+using std::vector;
+
+class Pixel;
+class Movie;
 
 
 //externêÈåæÇΩÇø
-
-
 extern Pixel LED[RES_LED_X][RES_LED_Y];
 extern int hMovie;
 extern int hTempFrameSoftImage;
 
-extern std::wstring PlayingFileName;
-extern std::wstring PlayingFilePath;
-extern std::vector<Movie> MovieTable;
-extern std::vector<Movie> PlayQueue;
+extern wstring PlayingFileName;
+extern wstring PlayingFilePath;
+extern vector<Movie> MovieTable;
+extern vector<Movie> PlayQueue;
 extern int NowplayingPos;
 
 extern int Scene;
@@ -32,9 +33,7 @@ extern int SoundVolume;
 extern int PlayTimeMilliseconds;
 extern int PlayFrame;
 extern int TotalFrames;
-extern int TotalTimeSeconds;
-extern int TotalTime_min;
-extern int TotalTime_sec;
+extern int TotalSeconds;
 
 extern int FPS;
 
@@ -94,19 +93,3 @@ extern bool RepeatOneFlag;
 extern bool RepeatAllFlag;
 extern bool ShuffleFlag;
 extern bool PauseFlag;
-
-extern const unsigned int White;
-extern const unsigned int Red;
-extern const unsigned int Blue;
-extern const unsigned int Green;
-extern const unsigned int Black;
-extern const unsigned int Yellow;
-extern const unsigned int Cyan;
-extern const unsigned int Mazenta;
-extern const unsigned int Orange;
-extern const unsigned int Purple;
-extern const unsigned int Pink;
-extern const unsigned int Sky;
-
-extern std::wstring KeyGuideForScreening;
-extern std::wstring KeyGuideForInitial;

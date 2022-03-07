@@ -36,7 +36,9 @@ HUDに半透明の背景をつける
 【済】lpstrBufferを動的確保
 【済】全体循環ON時に最後の動画の次の動画は最初の動画にする
 ソースコード内のTRUE, FALSEをtrue, false化
-マクロの使用をやめてconst変数化する
+【済】マクロの使用をやめてconst変数化する
+ガンマ補正の数値を一次関数的にする
+【済】SCREENING時にEscが押されたときにPlayResumeFrameが保存されていない問題の解消
 
 PlayingFileName
 PlayingFilePath

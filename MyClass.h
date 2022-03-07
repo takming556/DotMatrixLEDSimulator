@@ -1,25 +1,26 @@
 #pragma once
-#include <string>
-#include <math.h>
+
+using std::wstring;
+
 
 class Movie {
 public:
-	Movie(std::wstring FileName, std::wstring FilePath, int PlayResumeFrame, int TotalFrames, double FPS);
+	Movie(wstring FileName, wstring FilePath, int PlayResumeFrame, int TotalFrames, double FPS);
 	Movie();
-	std::wstring FileName;
-	std::wstring FilePath;
+	wstring FileName;
+	wstring FilePath;
 	int PlayResumeFrame;
 	int TotalFrames;
 	double FPS;
-	int TotalTimeSeconds;
+	int TotalSeconds;
 };
-inline Movie::Movie(std::wstring FileName, std::wstring FilePath, int PlayResumeFrame, int TotalFrames, double FPS) {
+inline Movie::Movie(wstring FileName, wstring FilePath, int PlayResumeFrame, int TotalFrames, double FPS) {
 	this->FileName = FileName;
 	this->FilePath = FilePath;
 	this->PlayResumeFrame = PlayResumeFrame;
 	this->TotalFrames = TotalFrames;
 	this->FPS = FPS;
-	this->TotalTimeSeconds = TotalFrames / FPS;
+	this->TotalSeconds = TotalFrames / FPS;
 }
 inline Movie::Movie() {}
 

@@ -1,10 +1,12 @@
 #include <string>
-#include <list>
+#include <vector>
 #include "DxLib.h"
-#include "defines.h"
+#include "consts.h"
 #include "externs.h"
 #include "MyClass.h"
 
+using std::wstring;
+using std::vector;
 
 Pixel LED[RES_LED_X][RES_LED_Y];
 
@@ -14,10 +16,10 @@ Pixel LED[RES_LED_X][RES_LED_Y];
 int hMovie;
 int hTempFrameSoftImage;
 
-std::wstring PlayingFileName;
-std::wstring PlayingFilePath;
-std::vector<Movie> MovieTable;
-std::vector<Movie> PlayQueue;
+wstring PlayingFileName;
+wstring PlayingFilePath;
+vector<Movie> MovieTable;
+vector<Movie> PlayQueue;
 int NowplayingPos = -1;
 
 int Scene = INITIAL;
@@ -51,11 +53,11 @@ double GammaAdjustStep = 0.05; //ガンマ値調節の最小単位
 int SoundVolume = 125;
 
 int PlayTimeMilliseconds = 0;    //再生位置(ミリ秒)
-int PlayFrame = 0;     //再生位置(フレーム)
-int TotalFrames = 0;       //再生中の動画の総フレーム数
-int TotalTimeSeconds = 0;  //再生中の動画の総再生時間(秒)
-int TotalTime_min = 0;     //再生中の動画の総再生時間の分部分
-int TotalTime_sec = 0;     //再生中の動画の総再生時間の秒部分
+int PlayFrame = 0;               //再生位置(フレーム)
+int TotalFrames = 0;             //再生中の動画の総フレーム数
+int TotalSeconds = 0;            //再生中の動画の総再生時間(秒)
+//int TotalTime_min = 0;     //再生中の動画の総再生時間の分部分
+//int TotalTime_sec = 0;     //再生中の動画の総再生時間の秒部分
 
 
 int SourceWidth;
@@ -118,54 +120,3 @@ bool RepeatOneFlag = FALSE;     //単体循環 入/切
 bool RepeatAllFlag = FALSE;     //全体循環 入/切
 bool ShuffleFlag = FALSE;       //乱順再生 入/切
 bool PauseFlag = FALSE;         //一時停止 入/切
-
-//よく使いそうな色を変数であらかじめ定義しておく
-const unsigned int White = GetColor(255, 255, 255);
-const unsigned int Red = GetColor(255, 0, 0);
-const unsigned int Blue = GetColor(0, 0, 255);
-const unsigned int Green = GetColor(0, 255, 0);
-const unsigned int Black = GetColor(0, 0, 0);
-const unsigned int Yellow = GetColor(255, 255, 0);
-const unsigned int Cyan = GetColor(0, 255, 255);
-const unsigned int Mazenta = GetColor(255, 0, 255);
-const unsigned int Orange = GetColor(255, 127, 0);
-const unsigned int Purple = GetColor(127, 0, 255);
-const unsigned int Pink = GetColor(255, 0, 127);
-const unsigned int Sky = GetColor(0, 127, 255);
-
-
-std::wstring KeyGuideForScreening = 
-L"[F1].....操作説明表示<入|切>"
-L"\n[F2].....再生待機列表示<入|切>"
-L"\n[F3].....状態表示<入|切>"
-L"\n[F11]....全画面表示<入|切>"
-L"\n[W]......色深度+"
-L"\n[S]......色深度-"
-L"\n[A]......ガンマ補正+"
-L"\n[D]......ガンマ補正-"
-L"\n[Space]..再生/一時停止"
-L"\n[←].....5秒戻る"
-L"\n[→].....5秒進む"
-L"\n[Z]......前の動画へ"
-L"\n[C]......次の動画へ"
-L"\n[B]......この動画の先頭へ"
-L"\n[↑].....音量+"
-L"\n[↓].....音量-"
-L"\n[R]......単体循環<入|切>"
-L"\n[T]......全体循環<入|切>"
-L"\n[F]......乱順再生<入|切>"
-L"\n[M]......単色表示<入|切>"
-L"\n[N]......反色表示<入|切>"
-L"\n[O]......ファイルを再生待機列に追加する"
-L"\n[Esc]....上映を終了する";
-
-std::wstring KeyGuideForInitial = 
-L"[O]........ファイルを再生待機列に追加する"
-L"\n[Delete]...再生待機列を破棄する"
-L"\n[Enter]....上映を開始する"
-L"\n[F1].......操作説明表示<入|切>"
-L"\n[F2].......再生待機列表示<入|切>"
-L"\n[F3].......状態表示<入|切>"
-L"\n[F11]......全画面表示<入|切>"
-L"\n[F]........乱順再生<入|切>"
-L"\n[Esc]......プログラムを終了する";

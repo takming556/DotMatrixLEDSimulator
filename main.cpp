@@ -1,15 +1,12 @@
-﻿#include <iostream>
-#include <string>
-#include <sstream>
+﻿#include <string>
 #include <fstream>
-#include <list>
 #include <random>
-#include <math.h>
+#include <vector>
 #include <ShlObj.h>
 #include "DxLib.h"
 #include "opencv2/opencv.hpp"
 #include "strconv.h"
-#include "defines.h"
+#include "consts.h"
 #include "externs.h"
 #include "MyClass.h"
 
@@ -21,6 +18,10 @@
 
 #pragma warning(disable:4996)
 
+using std::string;
+using std::wstring;
+using std::vector;
+
 
 //プロトタイプ宣言たち
 Pixel GetPixelColorAveraged(int GraphHandle, int picked_x, int picked_y, int target_res_x, int target_res_y, int source_res_x, int source_res_y);
@@ -31,12 +32,12 @@ void DrawKeyGuide();
 void DrawPlayQueue();
 void CheckKeyInput_onScreening();
 void ChangeScreenMode_onScreening();
-int AddMovie(std::wstring FileName, std::wstring FilePath);
+int AddMovie(wstring FileName, wstring FilePath);
 void BeginScreening(bool ResumeFlag=FALSE);
 void PlayPreviousMovie();
 void PlayForwardMovie();
-std::vector<Movie> CutoutMovies(std::vector<Movie> vctr, int from, int to);
-std::vector<Movie> GetShuffledMovies(std::vector<Movie>);
+vector<Movie> CutoutMovies(vector<Movie> vctr, int from, int to);
+vector<Movie> GetShuffledMovies(vector<Movie>);
 void EnableShuffle();
 void DisableShuffle();
 void Screening();
@@ -260,21 +261,16 @@ void Screening() {
 void BeginScreening(bool ResumeFlag) {
 	Scene = SCREENING;
 	FrameCounter = 0;
-	Movie movie = PlayQueue.at(NowplayingPos);
-	std::wstring FileName = movie.FileName;
-	std::wstring FilePath = movie.FilePath;
-	PlayingFileName = FileName;
-	PlayingFilePath = FilePath;
-	TotalFrames = movie.TotalFrames;
-	TotalTimeSeconds = movie.TotalTimeSeconds;
-	TotalTime_min = TotalTimeSeconds / 60;
-	TotalTime_sec = TotalTimeSeconds % 60;
+	Movie *movie = &PlayQueue.at(NowplayingPos);
+	PlayingFileName = movie->FileName;
+	PlayingFilePath = movie->FilePath;
+	TotalFrames = movie->TotalFrames;
+	TotalSeconds = movie->TotalSeconds;
 	DeleteGraph(hMovie);
-	hMovie = LoadGraph(FilePath.c_str());
+	hMovie = LoadGraph(movie->FilePath.c_str());
 	ChangeMovieVolumeToGraph(SoundVolume, hMovie);
-	if (ResumeFlag == TRUE)SeekMovieToGraphToFrame(hMovie, movie.PlayResumeFrame);
+	if (ResumeFlag == TRUE)SeekMovieToGraphToFrame(hMovie, movie->PlayResumeFrame);
 	PlayMovieToGraph(hMovie);
-	//Timer = GetNowCount();
 }
 
 
@@ -314,8 +310,8 @@ void PlayForwardMovie() {
 
 
 
-int AddMovie(std::wstring FileName, std::wstring FilePath) {
-	std::string utf8FilePath = wide_to_utf8(FilePath);
+int AddMovie(wstring FileName, wstring FilePath) {
+	string utf8FilePath = wide_to_utf8(FilePath);
 	cv::VideoCapture video;
 	video.open(utf8FilePath);
 	if (video.isOpened() == FALSE)return -1;
@@ -385,7 +381,7 @@ void OpenFiles() {
 		hr = pIShellItem->GetDisplayName(SIGDN_FILESYSPATH, &lpszFilePath);
 		if (FAILED(hr))continue;
 
-		AddMovie(std::wstring(lpszFileName), std::wstring(lpszFilePath));
+		AddMovie(wstring(lpszFileName), wstring(lpszFilePath));
 		//DrawFormatString(0, i * 15, Orange, L"%ls", lpszFilePath);
 		//fout << lpszFilePath << std::endl;
 
@@ -403,12 +399,12 @@ void OpenFiles() {
 
 void EnableShuffle() {
 	ShuffleFlag = TRUE;
-	if (PlayQueue.size() >= 2) {
-		std::vector<Movie> ForwardMovies = CutoutMovies(PlayQueue, NowplayingPos + 1, PlayQueue.size() - 1);
-		std::vector<Movie>::iterator from = PlayQueue.begin() + NowplayingPos + 1;
-		std::vector<Movie>::iterator to = PlayQueue.begin() + PlayQueue.size() - 1;
+	if (PlayQueue.size() >= 2 && NowplayingPos < (int)PlayQueue.size() - 1) {
+		vector<Movie> ForwardMovies = CutoutMovies(PlayQueue, NowplayingPos + 1, PlayQueue.size() - 1);
+		vector<Movie>::iterator from = PlayQueue.begin() + NowplayingPos + 1;
+		vector<Movie>::iterator to = PlayQueue.begin() + PlayQueue.size() - 1;
 		PlayQueue.erase(from, to);
-		std::vector<Movie> ShuffledMovies = GetShuffledMovies(ForwardMovies);
+		vector<Movie> ShuffledMovies = GetShuffledMovies(ForwardMovies);
 		PlayQueue.insert(PlayQueue.end(), ShuffledMovies.begin(), ShuffledMovies.end());
 	}
 }
@@ -419,13 +415,13 @@ void DisableShuffle() {
 }
 
 
-std::vector<Movie> CutoutMovies(std::vector<Movie> vctr, int from, int to) {
-	std::vector<Movie> resp = { vctr.begin() + from, vctr.begin() + to };
+vector<Movie> CutoutMovies(vector<Movie> vctr, int from, int to) {
+	vector<Movie> resp = { vctr.begin() + from, vctr.begin() + to };
 	return resp;
 }
 
 
-std::vector<Movie> GetShuffledMovies(std::vector<Movie> vctr) {
+vector<Movie> GetShuffledMovies(vector<Movie> vctr) {
 	std::random_device rd;
 	std::default_random_engine rng(rd());
 	std::shuffle(vctr.begin(), vctr.end(), rng);
@@ -509,6 +505,9 @@ Pixel GetPixelColorAveraged(int GraphHandle, int picked_x, int picked_y, int tar
 void DrawStatus() {
 	int PlayTime_min = PlayTimeMilliseconds / 1000 / 60;
 	int PlayTime_sec = PlayTimeMilliseconds / 1000 % 60;
+	int TotalTime_min = TotalSeconds / 60;
+	int TotalTime_sec = TotalSeconds % 60;
+
 	ColorTones = R_Tones * G_Tones * B_Tones;
 
 	DrawFormatString(0, 0  , White, L"FileName:    %ls", PlayingFileName.c_str());
@@ -802,7 +801,13 @@ void CheckKeyInput_onScreening() {
 	if (PushFlag_Key_Esc == FALSE && CheckHitKey(KEY_INPUT_ESCAPE) == TRUE) {
 		PushFlag_Key_Esc = TRUE;
 		PauseMovieToGraph(hMovie);
-		//PlayList.clear();
+		PlayQueue.at(NowplayingPos).PlayResumeFrame = TellMovieToGraphToFrame(hMovie);
+		PlayingFileName = L"";
+		PlayingFilePath = L"";
+		PlayFrame = 0;
+		PlayTimeMilliseconds = 0;
+		TotalFrames = 0;
+		TotalSeconds = 0;
 		DeleteGraph(hMovie);
 		Scene = INITIAL;
 	}
