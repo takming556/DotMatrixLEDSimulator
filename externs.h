@@ -5,7 +5,7 @@ class Pixel;
 class Movie;
 
 
-//externéŒ¾‚½‚¿
+//externï¿½éŒ¾ï¿½ï¿½ï¿½ï¿½
 extern Pixel LED[RES_LED_X][RES_LED_Y];
 extern int hMovie;
 extern int hTempFrameSoftImage;

@@ -138,6 +138,7 @@ void Initial() {
 		PushFlag_Key_F11 = TRUE;
 		FullscreenFlag = !FullscreenFlag;
 		ChangeWindowMode(!FullscreenFlag);
+		SetMouseDispFlag(TRUE);
 	}
 	if (PushFlag_Key_F11 == TRUE && CheckHitKey(KEY_INPUT_F11) == FALSE) {
 		PushFlag_Key_F11 = FALSE;
@@ -551,6 +552,7 @@ void DrawPlayQueue() {
 void ChangeScreenMode_onScreening() {
 	bool WindowMode = !FullscreenFlag;
 	ChangeWindowMode(WindowMode);
+	SetMouseDispFlag(TRUE);
 	hMovie = LoadGraph(PlayingFilePath.c_str());
 	ChangeMovieVolumeToGraph(SoundVolume, hMovie);
 	SeekMovieToGraph(hMovie, PlayTimeMilliseconds);
