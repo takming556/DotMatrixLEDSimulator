@@ -1,11 +1,11 @@
-using std::wstring;
+﻿using std::wstring;
 using std::vector;
 
 class Pixel;
 class Movie;
 
 
-//extern�錾����
+//extern宣言
 extern Pixel LED[RES_LED_X][RES_LED_Y];
 extern int hMovie;
 extern int hTempFrameSoftImage;

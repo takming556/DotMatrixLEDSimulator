@@ -11,9 +11,9 @@
 #include "MyClass.h"
 
 #ifdef _DEBUG
-#pragma comment(lib, "opencv_world455d.lib")
+#pragma comment(lib, "opencv_world460d.lib")
 #else
-#pragma comment(lib, "opencv_world455.lib")
+#pragma comment(lib, "opencv_world460.lib")
 #endif
 
 #pragma warning(disable:4996)
@@ -383,6 +383,7 @@ void OpenFiles() {
 		if (FAILED(hr))continue;
 
 		AddMovie(wstring(lpszFileName), wstring(lpszFilePath));
+		//AddMovie(lpszFileName, lpszFilePath);
 		//DrawFormatString(0, i * 15, Orange, L"%ls", lpszFilePath);
 		//fout << lpszFilePath << std::endl;
 

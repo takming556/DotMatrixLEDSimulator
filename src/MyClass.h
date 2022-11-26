@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 using std::wstring;
 
@@ -27,8 +27,8 @@ inline Movie::Movie() {}
 
 class Pixel {
 public:
-	Pixel(unsigned char Ir, unsigned char Ig, unsigned char Ib, int Ia); //“–ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ªì¬‚³‚ê‚½‚Æ‚«‚Éˆø”‚ª—^‚¦‚ç‚ê‚½ê‡‚ÉÀs‚³‚ê‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	Pixel() { r = 127; g = 127; b = 127; a = 0; }                    //“–ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ªì¬‚³‚ê‚½‚Æ‚«‚Éˆø”‚ª—^‚¦‚ç‚ê‚È‚©‚Á‚½ê‡‚ÉÀs‚³‚ê‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	Pixel(unsigned char Ir, unsigned char Ig, unsigned char Ib, int Ia); //å½“ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒä½œæˆã•ã‚ŒãŸã¨ãã«å¼•æ•°ãŒä¸ãˆã‚‰ã‚ŒãŸå ´åˆã«å®Ÿè¡Œã•ã‚Œã‚‹ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	Pixel() { r = 127; g = 127; b = 127; a = 0; }                    //å½“ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒä½œæˆã•ã‚ŒãŸã¨ãã«å¼•æ•°ãŒä¸ãˆã‚‰ã‚Œãªã‹ã£ãŸå ´åˆã«å®Ÿè¡Œã•ã‚Œã‚‹ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;

@@ -1,4 +1,4 @@
-#include <string>
+ï»¿#include <string>
 #include <vector>
 #include "DxLib.h"
 #include "consts.h"
@@ -11,8 +11,8 @@ using std::vector;
 Pixel LED[RES_LED_X][RES_LED_Y];
 
 
-//ƒOƒ[ƒoƒ‹•Ï”‚½‚¿
-//ƒnƒ“ƒhƒ‹
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ãŸã¡
+//ãƒãƒ³ãƒ‰ãƒ«
 int hMovie;
 int hTempFrameSoftImage;
 
@@ -42,22 +42,22 @@ int ColorDepthCustoms[15][3] = {
 	{256,256,256}		//14
 };
 int ColorDepthCustomID = 6;
-int R_Tones = ColorDepthCustoms[ColorDepthCustomID][0];//ÔF‚ÌŠK’²”
-int G_Tones = ColorDepthCustoms[ColorDepthCustomID][1];//—ÎF‚ÌŠK’²”
-int B_Tones = ColorDepthCustoms[ColorDepthCustomID][2];//ÂF‚ÌŠK’²”
-int ColorTones = R_Tones * G_Tones * B_Tones; //•\Œ»‰Â”\‚ÈF‚Ì”
+int R_Tones = ColorDepthCustoms[ColorDepthCustomID][0];//èµ¤è‰²ã®éšèª¿æ•°
+int G_Tones = ColorDepthCustoms[ColorDepthCustomID][1];//ç·‘è‰²ã®éšèª¿æ•°
+int B_Tones = ColorDepthCustoms[ColorDepthCustomID][2];//é’è‰²ã®éšèª¿æ•°
+int ColorTones = R_Tones * G_Tones * B_Tones; //è¡¨ç¾å¯èƒ½ãªè‰²ã®æ•°
 
-double Gamma = 0.55;            //ƒKƒ“ƒ}’l
-double GammaAdjustStep = 0.05; //ƒKƒ“ƒ}’l’²ß‚ÌÅ¬’PˆÊ
+double Gamma = 0.55;            //ã‚¬ãƒ³ãƒå€¤
+double GammaAdjustStep = 0.05; //ã‚¬ãƒ³ãƒå€¤èª¿ç¯€ã®æœ€å°å˜ä½
 
 int SoundVolume = 125;
 
-int PlayTimeMilliseconds = 0;    //Ä¶ˆÊ’u(ƒ~ƒŠ•b)
-int PlayFrame = 0;               //Ä¶ˆÊ’u(ƒtƒŒ[ƒ€)
-int TotalFrames = 0;             //Ä¶’†‚Ì“®‰æ‚Ì‘ƒtƒŒ[ƒ€”
-int TotalSeconds = 0;            //Ä¶’†‚Ì“®‰æ‚Ì‘Ä¶ŠÔ(•b)
-//int TotalTime_min = 0;     //Ä¶’†‚Ì“®‰æ‚Ì‘Ä¶ŠÔ‚Ì•ª•”•ª
-//int TotalTime_sec = 0;     //Ä¶’†‚Ì“®‰æ‚Ì‘Ä¶ŠÔ‚Ì•b•”•ª
+int PlayTimeMilliseconds = 0;    //å†ç”Ÿä½ç½®(ãƒŸãƒªç§’)
+int PlayFrame = 0;               //å†ç”Ÿä½ç½®(ãƒ•ãƒ¬ãƒ¼ãƒ )
+int TotalFrames = 0;             //å†ç”Ÿä¸­ã®å‹•ç”»ã®ç·ãƒ•ãƒ¬ãƒ¼ãƒ æ•°
+int TotalSeconds = 0;            //å†ç”Ÿä¸­ã®å‹•ç”»ã®ç·å†ç”Ÿæ™‚é–“(ç§’)
+//int TotalTime_min = 0;     //å†ç”Ÿä¸­ã®å‹•ç”»ã®ç·å†ç”Ÿæ™‚é–“ã®åˆ†éƒ¨åˆ†
+//int TotalTime_sec = 0;     //å†ç”Ÿä¸­ã®å‹•ç”»ã®ç·å†ç”Ÿæ™‚é–“ã®ç§’éƒ¨åˆ†
 
 
 int SourceWidth;
@@ -72,8 +72,8 @@ int FPS = 0;
 
 
 
-//ƒtƒ‰ƒO
-//ƒL[ƒ{[ƒh‰Ÿ‰ºƒtƒ‰ƒO
+//ãƒ•ãƒ©ã‚°
+//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŠ¼ä¸‹ãƒ•ãƒ©ã‚°
 bool PushFlag_Key_F1 = FALSE;
 bool PushFlag_Key_F2 = FALSE;
 bool PushFlag_Key_F3 = FALSE;
@@ -110,13 +110,13 @@ bool PushFlag_Key_Delete = FALSE;
 
 
 
-bool FullscreenFlag = FALSE;    //‘S‰æ–Ê•\¦ “ü/Ø
-bool StatusHudShowFlag = TRUE;  //ƒXƒe[ƒ^ƒX•\¦ “ü/Ø
-bool KeyGuideShowFlag = TRUE;   //‘€ìƒKƒCƒh•\¦ “ü/Ø
-bool PlayQueueShowFlag = TRUE;  //Ä¶‘Ò‹@—ñ•\¦ “ü/Ø
-bool MonochromizeFlag = FALSE;  //ƒ‚ƒmƒNƒ•\¦ “ü/Ø
-bool NegativizeFlag = FALSE;    //ƒlƒK•\¦ “ü/Ø
-bool RepeatOneFlag = FALSE;     //’P‘ÌzŠÂ “ü/Ø
-bool RepeatAllFlag = FALSE;     //‘S‘ÌzŠÂ “ü/Ø
-bool ShuffleFlag = FALSE;       //—‡Ä¶ “ü/Ø
-bool PauseFlag = FALSE;         //ˆê’â~ “ü/Ø
+bool FullscreenFlag = FALSE;    //å…¨ç”»é¢è¡¨ç¤º å…¥/åˆ‡
+bool StatusHudShowFlag = TRUE;  //ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡¨ç¤º å…¥/åˆ‡
+bool KeyGuideShowFlag = TRUE;   //æ“ä½œã‚¬ã‚¤ãƒ‰è¡¨ç¤º å…¥/åˆ‡
+bool PlayQueueShowFlag = TRUE;  //å†ç”Ÿå¾…æ©Ÿåˆ—è¡¨ç¤º å…¥/åˆ‡
+bool MonochromizeFlag = FALSE;  //ãƒ¢ãƒã‚¯ãƒ­è¡¨ç¤º å…¥/åˆ‡
+bool NegativizeFlag = FALSE;    //ãƒã‚¬è¡¨ç¤º å…¥/åˆ‡
+bool RepeatOneFlag = FALSE;     //å˜ä½“å¾ªç’° å…¥/åˆ‡
+bool RepeatAllFlag = FALSE;     //å…¨ä½“å¾ªç’° å…¥/åˆ‡
+bool ShuffleFlag = FALSE;       //ä¹±é †å†ç”Ÿ å…¥/åˆ‡
+bool PauseFlag = FALSE;         //ä¸€æ™‚åœæ­¢ å…¥/åˆ‡
