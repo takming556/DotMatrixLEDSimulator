@@ -47,29 +47,29 @@ void Initial();
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	ChangeWindowMode(TRUE); //ウィンドウ表示オン
-	SetAlwaysRunFlag(TRUE); //非アクティブ時でも実行を止めない
-	SetMainWindowText(L"DotMatrixLEDSimulator");
-	SetGraphMode(RES_SCR_X, RES_SCR_Y, 32); //画面解像度[RES_SCR_X] x [RES_SCR_Y], 24ビットカラーに設定
-	SetOutApplicationLogValidFlag(FALSE); //Log.txtを出力するか否か
-	if (DxLib_Init() == -1)    // ＤＸライブラリ初期化処理
+	DxLib::ChangeWindowMode(TRUE); //ウィンドウ表示オン
+	DxLib::SetAlwaysRunFlag(TRUE); //非アクティブ時でも実行を止めない
+	DxLib::SetMainWindowText(L"DotMatrixLEDSimulator");
+	DxLib::SetGraphMode(RES_SCR_X, RES_SCR_Y, 32); //画面解像度[RES_SCR_X] x [RES_SCR_Y], 24ビットカラーに設定
+	DxLib::SetOutApplicationLogValidFlag(FALSE); //Log.txtを出力するか否か
+	if (DxLib::DxLib_Init() == -1)    // ＤＸライブラリ初期化処理
 	{
 		return -1;    // エラーが発生したら終了
 	}
-	SetDrawScreen(DX_SCREEN_BACK); //描画先を裏画面に設定
+	DxLib::SetDrawScreen(DX_SCREEN_BACK); //描画先を裏画面に設定
 
 
-	while (ProcessMessage() == 0) //ウィンドウの閉じるボタンが押されるとループを抜ける
+	while (DxLib::ProcessMessage() == 0) //ウィンドウの閉じるボタンが押されるとループを抜ける
 	{
 
-		if (PushFlag_Key_Esc == FALSE && CheckHitKey(KEY_INPUT_ESCAPE) == TRUE) {
+		if (PushFlag_Key_Esc == FALSE && DxLib::CheckHitKey(KEY_INPUT_ESCAPE) == TRUE) {
 			if (Scene == INITIAL)break; //初期画面でEscキーが押されると終了
 		}
-		if (PushFlag_Key_Esc == TRUE && CheckHitKey(KEY_INPUT_ESCAPE) == FALSE) {
+		if (PushFlag_Key_Esc == TRUE && DxLib::CheckHitKey(KEY_INPUT_ESCAPE) == FALSE) {
 			PushFlag_Key_Esc = FALSE;
 		}
 		
-		ClearDrawScreen();
+		DxLib::ClearDrawScreen();
 
 		switch (Scene) {
 		case INITIAL:
@@ -80,21 +80,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 
-		ScreenFlip();
+		DxLib::ScreenFlip();
 
 
 		++FrameCounter;
-		if (Timer + 1000 <= GetNowCount()) {
+		if (Timer + 1000 <= DxLib::GetNowCount()) {
 			FPS = FrameCounter;
 			FrameCounter = 0;
-			Timer = GetNowCount();
+			Timer = DxLib::GetNowCount();
 		}
 
 	}
  
 	// 読み込んだムービーファイルのグラフィックハンドルの削除
-	DeleteGraph(hMovie);
-	DxLib_End();        // ＤＸライブラリ使用の終了処理
+	DxLib::DeleteGraph(hMovie);
+	DxLib::DxLib_End();        // ＤＸライブラリ使用の終了処理
 
 	return 0;        // ソフトの終了
 }
